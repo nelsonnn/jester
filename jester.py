@@ -5,9 +5,11 @@ sys.path.append('/usr/local/lib/python2.7/site-packages')
 import numpy as np
 import cv2
 
+def clear():
+    os.system( 'cls' )
 #Initialize a face cascade using the frontal face haar cascade provided
 #with the OpenCV2 library
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('haarcascade/aGest.xml')
 
 #The deisred output width and height
 OUTPUT_SIZE_WIDTH = 775
@@ -57,37 +59,42 @@ while True:
     gray = cv2.cvtColor(baseImage, cv2.COLOR_BGR2GRAY)
     #Now use the haar cascade detector to find all faces in the
     #image
-    faces = faceCascade.detectMultiScale(gray, 1.3, 5)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
 
     #For now, we are only interested in the 'largest' face, and we
     #determine this based on the largest area of the found
     #rectangle. First initialize the required variables to 0
     maxArea = 0
-    x = 0
-    y = 0
-    w = 0
-    h = 0
+    # x = 0
+    # y = 0
+    # w = 0
+    # h = 0
 
 
     #Loop over all faces and check if the area for this face is
-    #the largest so far
+    # #the largest so far
+    face_boxes = []
+
     for (_x,_y,_w,_h) in faces:
+        face_boxes.append([_x,_y,_w,_h])
         if  _w*_h > maxArea:
-            x = _x
-            y = _y
-            w = _w
-            h = _h
-            maxArea = w*h
+            # x = _x
+            # y = _y
+            # w = _w
+            # h = _h
+            maxArea = _w*_h
 
         #If one or more faces are found, draw a rectangle around the
         #largest face present in the picture
         if maxArea > 0 :
-            cv2.rectangle(resultImage,  (x-10, y-20),
-                        (x + w+10 , y + h+20),
+            for box in face_boxes:
+                cv2.rectangle(resultImage,  (box[0]-10, box[1]-20),
+                        (box[0] + box[2]+10 , box[1] + box[3]+20),
                         rectangleColor,2)
-
-
+            # cv2.rectangle(resultImage,  (x-10, y-20),
+            #         (x + w+10 , y + h+20),
+            #         rectangleColor,2)
 
     #Since we want to show something larger on the screen than the
     #original 320x240, we resize the image again
@@ -102,3 +109,6 @@ while True:
     #Finally, we want to show the images on the screen
     cv2.imshow("base-image", baseImage)
     cv2.imshow("result-image", largeResult)
+    for face in face_boxes:
+        print(face[0], ",", face[1])
+    clear()
