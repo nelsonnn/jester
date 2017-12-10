@@ -1,15 +1,16 @@
 #Import the OpenCV library
+import os
 import sys
 
 sys.path.append('/usr/local/lib/python2.7/site-packages')
 import numpy as np
 import cv2
-
+from time import sleep
 def clear():
-    os.system( 'cls' )
+    os.system( 'clear' )
 #Initialize a face cascade using the frontal face haar cascade provided
 #with the OpenCV2 library
-face_cascade = cv2.CascadeClassifier('haarcascade/aGest.xml')
+face_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt2.xml')
 
 #The deisred output width and height
 OUTPUT_SIZE_WIDTH = 775
@@ -110,5 +111,6 @@ while True:
     cv2.imshow("base-image", baseImage)
     cv2.imshow("result-image", largeResult)
     for face in face_boxes:
-        print(face[0], ",", face[1])
+        print("{}, {}".format(face[0], face[1]) )
+    sleep(.05)
     clear()
