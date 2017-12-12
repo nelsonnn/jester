@@ -33,6 +33,4 @@ def ConnectToDrone():
         print('Unable to connect to a product')
         sys.exit(1)
 
-        drone.dump_state()
-
         return drone
