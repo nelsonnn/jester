@@ -1,7 +1,11 @@
 import os
 import sys
+
+sys.path.append('/Users/ryan/Desktop/Bybop/Bybop/src')
+
 from Bybop_Discovery import *
 import Bybop_Device
+
 
 def ConnectToDrone():
 
@@ -33,4 +37,6 @@ def ConnectToDrone():
         print('Unable to connect to a product')
         sys.exit(1)
 
-        return drone
+#        return drone
+
+ConnectToDrone()
