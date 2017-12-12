@@ -3,32 +3,36 @@ import sys
 from Bybop_Discovery import *
 import Bybop_Device
 
-print('Searching for devices')
+def ConnectToDrone():
 
-discovery = Discovery(DeviceID.ALL)
+    print('Searching for devices')
 
-discovery.wait_for_change()
+    discovery = Discovery(DeviceID.ALL)
 
-devices = discovery.get_devices()
+    discovery.wait_for_change()
 
-discovery.stop()
+    devices = discovery.get_devices()
 
-if not devices:
-    print('Oops ...')
-    sys.exit(1)
+    discovery.stop()
 
-device = next(iter(devices.values()))
+    if not devices:
+        print('Oops ...')
+        sys.exit(1)
 
-print('Will connect to ' + get_name(device))
+        device = next(iter(devices.values()))
 
-d2c_port = 54321
-controller_type = "PC"
-controller_name = "bybop shell"
+        print('Will connect to ' + get_name(device))
 
-drone = Bybop_Device.create_and_connect(device, d2c_port, controller_type, controller_name)
+        d2c_port = 54321
+        controller_type = "PC"
+        controller_name = "bybop shell"
 
-if drone is None:
-    print('Unable to connect to a product')
-    sys.exit(1)
+        drone = Bybop_Device.create_and_connect(device, d2c_port, controller_type, controller_name)
 
-drone.dump_state()
+    if drone is None:
+        print('Unable to connect to a product')
+        sys.exit(1)
+
+        drone.dump_state()
+
+        return drone
