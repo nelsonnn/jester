@@ -6,6 +6,7 @@ sys.path.append('/usr/local/lib/python2.7/site-packages')
 import numpy as np
 import cv2
 from time import sleep
+import DynamicCentering.py
 def clear():
     os.system( 'clear' )
 #Initialize a face cascade using the frontal face haar cascade provided
