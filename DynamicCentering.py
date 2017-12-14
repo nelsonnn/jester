@@ -4,17 +4,24 @@ from Bybop_Discovery import *
 import Bybop_Device
 
 
+#drone.send_data('ardrone3.Piloting.PCMD', flag, roll, pitch, yaw, gaz, timestamp)
 
-def Centering(Xcenter,Ycenter,Width): #inputs are the center coordinates and Width of face
+def Centering(drone,LeftDot,CenterDotX,CenterDotY,RightDot,Width): #inputs are the center coordinates and Width of face
+    if (CenterDot-LeftDot) > (RightDot-CenterDot): #Drone is too far Left
+        Ratio = (CenterDot-LeftDot)/(RightDot-CenterDot)
+        drone.send_data('ardrone3.Piloting.PCMD', False, Ratio*50, 0, 0, 0, 0)
+    elif (CenterDot-LeftDot) < (RightDot-CenterDot): #Drone is too far right
+        Ratio = (CenterDot-LeftDot)/(RightDot-CenterDot)
+        drone.send_data('ardrone3.Piloting.PCMD', False, Ratio*-50, 0, 0, 0, 0)
+        
     if Width > 50: #Drone is too close to face
-        drone.send_data('aRDrone3.Piloting.sendPilotingMoveBy',0,0,0,0)
+        drone.send_data('ardrone3.Piloting.PCMD', False, 0, -50, 0, 0, 0)
     elif Width < 50: #Drone is too far from face
-        drone.send_data('aRDrone3.Piloting.sendPilotingMoveBy',0,0,0,0)
-    if Xcenter > 388: #Face is to the right of drone's vision
-        drone.send_data('aRDrone3.Piloting.sendPilotingMoveBy',0,0,0,-1)
-    elif Xcenter < 388: #Face is to the left of drone's vision
-        drone.send_data('aRDrone3.Piloting.sendPilotingMoveBy',0,0,0,1)
-    if Ycenter > 250: #Face is to the top of drone's vision
-        drone.send_data('aRDrone3.Piloting.sendPilotingMoveBy',0,0,0,0)
-    elif Ycenter < 250: #Face is to the bottom of drone's vision
-        drone.send_data('aRDrone3.Piloting.sendPilotingMoveBy',0,0,0,0)
+        drone.send_data('ardrone3.Piloting.PCMD', False, 0, 50, 0, 0, 0)
+        
+    if CenterDotY > 330: #Drone too low
+        HeightRatio = CenterDoty/330
+        drone.send_data('ardrone3.Piloting.PCMD', False, 0, 0, 0, HeightRatio*50, 0)
+    elif CenterDotY < 330: #Drone too high
+        HeightRatio = 330/CenterDoty
+        drone.send_data('ardrone3.Piloting.PCMD', False, 0, 0, 0, HeightRatio*-50, 0)
