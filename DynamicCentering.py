@@ -6,7 +6,7 @@ import Bybop_Device
 
 #drone.send_data('ardrone3.Piloting.PCMD', flag, roll, pitch, yaw, gaz, timestamp)
 
-def Centering(drone,LeftDot,CenterDotX,CenterDotY,RightDot,Width): #inputs are the center coordinates and Width of face
+def Centering(drone,LeftDot,CenterDotX,CenterDotY,RightDot,Width): 
     if (CenterDot-LeftDot) > (RightDot-CenterDot): #Drone is too far Left
         Ratio = (CenterDot-LeftDot)/(RightDot-CenterDot)
         drone.send_data('ardrone3.Piloting.PCMD', False, Ratio*50, 0, 0, 0, 0)
