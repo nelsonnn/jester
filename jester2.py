@@ -4,6 +4,7 @@ import imutils
 import dlib
 import cv2
 from DroneStartup import ConnectToDrone
+from DynamicCentering import Centering
 
 OUTPUT_SIZE_WIDTH = 775
 OUTPUT_SIZE_HEIGHT = 600
@@ -28,8 +29,8 @@ cv2.moveWindow("result-image",400,100)
 #Start the window thread for the two windows we are using
 cv2.startWindowThread()
 
-# drone = ConnectToDrone()
-# drone.take_off()
+drone = ConnectToDrone()
+drone.take_off()
 
 while True:
     #Retrieve the latest image from the webcam
@@ -89,6 +90,7 @@ while True:
     # if maxarea > 0:
     #     if x > 300:
             #drone.send_data('ardrone3.Piloting.PCMD', False, 0, 0, 50, 0, 0)
+    Centering(drone,shape[2][0],shape[30][0],shape[0][1],shape[14][0],w)
 
     #Since we want to show something larger on the screen than the
     #original 320x240, we resize the image again
