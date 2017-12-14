@@ -3,6 +3,7 @@ import numpy as np
 import imutils
 import dlib
 import cv2
+from DroneStartup import ConnectToDrone
 
 OUTPUT_SIZE_WIDTH = 775
 OUTPUT_SIZE_HEIGHT = 600
@@ -27,6 +28,9 @@ cv2.moveWindow("result-image",400,100)
 #Start the window thread for the two windows we are using
 cv2.startWindowThread()
 
+# drone = ConnectToDrone()
+# drone.take_off()
+
 while True:
     #Retrieve the latest image from the webcam
     rc,fullSizeBaseImage = capture.read()
@@ -39,6 +43,8 @@ while True:
     pressedKey = cv2.waitKey(2)
     if pressedKey == ord('Q'):
         cv2.destroyAllWindows()
+        # drone.land()
+        # drone.stop()
         exit(0)
 
 
@@ -56,6 +62,12 @@ while True:
     #image
     faces = detector(gray, 1)
 
+    #for finding the biggest face
+    maxarea = 0
+    x = 0
+    y = 0
+    w = 0
+    h = 0
 
     for(i, face) in enumerate(faces):
 
@@ -64,10 +76,19 @@ while True:
         shape = face_utils.shape_to_np(shape)
 
 
-        (x, y, w, h) = face_utils.rect_to_bb(face)
-        cv2.rectangle(baseImage, (x,y), (x + w, y + h), rectangleColor)
-        for (x, y) in shape:
-            cv2.circle(baseImage, (x, y), 1, (0, 0, 255), -1)
+        (x_, y_, w_, h_) = face_utils.rect_to_bb(face)
+        cv2.rectangle(resultImage, (x_,y_), (x_ + w_, y_ + h_), rectangleColor)
+        for (x_, y_) in shape:
+            cv2.circle(resultImage, (x_, y_), 1, (0, 0, 255), -1)
+        if w_ * h_ > maxarea:
+            maxarea = w_ * h_
+            x = x_
+            y = y_
+            w = w_
+            h = h_
+    # if maxarea > 0:
+    #     if x > 300:
+            #drone.send_data('ardrone3.Piloting.PCMD', False, 0, 0, 50, 0, 0)
 
     #Since we want to show something larger on the screen than the
     #original 320x240, we resize the image again
