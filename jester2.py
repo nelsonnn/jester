@@ -2,6 +2,7 @@ from imutils import face_utils
 import numpy as np
 import imutils
 import dlib
+from time import sleep
 import cv2
 from DroneStartup import ConnectToDrone
 from DynamicCentering import Centering
@@ -30,7 +31,18 @@ cv2.moveWindow("result-image",400,100)
 cv2.startWindowThread()
 
 drone = ConnectToDrone()
+# drone.send_data('ardrone3.Piloting.FlatTrim')
+# sleep(10)
 drone.take_off()
+sleep(5)
+drone.send_data('ardrone3.Piloting.moveBy', 0, 0, -.75, 0)
+drone.send_data('ardrone3.SpeedSettings.MaxRotationSpeed', 100)
+drone.send_data('ardrone3.SpeedSettings.MaxPitchRollRotationSpeed', 8)
+drone.send_data('ardrone3.PilotingSettings.MaxTilt', 20)
+# drone.send_data('ardrone3.SpeedSettings.MaxSpeed', 8)
+
+# drone.send_data('ardrone3.PilotingSettings.Altitude', 2.5)
+
 
 while True:
     #Retrieve the latest image from the webcam
@@ -40,12 +52,14 @@ while True:
     baseImage = imutils.resize(fullSizeBaseImage, width=500)
 
     #Check if a key was pressed and if it was Q, then destroy all
-    #opencv windows and exit the application
+    #opencv windows, land the drone and exit the application
     pressedKey = cv2.waitKey(2)
     if pressedKey == ord('Q'):
         cv2.destroyAllWindows()
-        # drone.land()
-        # drone.stop()
+        drone.send_data('ardrone3.Piloting.moveBy', 0, 0, 0, 0)
+        drone.land()
+
+        drone.stop()
         exit(0)
 
 
@@ -79,18 +93,24 @@ while True:
 
         (x_, y_, w_, h_) = face_utils.rect_to_bb(face)
         cv2.rectangle(resultImage, (x_,y_), (x_ + w_, y_ + h_), rectangleColor)
-        for (x_, y_) in shape:
-            cv2.circle(resultImage, (x_, y_), 1, (0, 0, 255), -1)
+        for (i, (x_, y_)) in enumerate(shape):
+            if i == 2 or i == 30 or i ==14:
+                cv2.circle(resultImage, (x_, y_), 1, (0, 0, 255), -1)
         if w_ * h_ > maxarea:
             maxarea = w_ * h_
             x = x_
             y = y_
             w = w_
             h = h_
-    # if maxarea > 0:
-    #     if x > 300:
-            #drone.send_data('ardrone3.Piloting.PCMD', False, 0, 0, 50, 0, 0)
-    Centering(drone,shape[2][0],shape[30][0],shape[0][1],shape[14][0],w)
+
+
+    if maxarea > 0:
+
+        face_centerX = x + (w/2)
+        face_centerY = y + (h/2)
+        print("{0} \r".format(w))
+
+        Centering(drone, shape[2][0], shape[30][0], shape[30][1], shape[14][0], w, face_centerX, face_centerY)
 
     #Since we want to show something larger on the screen than the
     #original 320x240, we resize the image again
