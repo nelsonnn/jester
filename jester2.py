@@ -17,7 +17,6 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
 #Open the first webcame device
-capture = cv2.VideoCapture(0)
 
 #Create two opencv named windows
 cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
@@ -39,6 +38,9 @@ drone.send_data('ardrone3.Piloting.moveBy', 0, 0, -.75, 0)
 drone.send_data('ardrone3.SpeedSettings.MaxRotationSpeed', 100)
 drone.send_data('ardrone3.SpeedSettings.MaxPitchRollRotationSpeed', 8)
 drone.send_data('ardrone3.PilotingSettings.MaxTilt', 20)
+drone.start_streaming()
+
+capture = cv2.VideoCapture(0)
 # drone.send_data('ardrone3.SpeedSettings.MaxSpeed', 8)
 
 # drone.send_data('ardrone3.PilotingSettings.Altitude', 2.5)
@@ -84,18 +86,22 @@ while True:
     w = 0
     h = 0
 
-    for(i, face) in enumerate(faces):
+    for face in faces:
 
         # determine the facial landmarks for the face region
         shape = predictor(gray, face)
-        shape = face_utils.shape_to_np(shape)
+        #shape = face_utils.shape_to_np(shape)
 
 
         (x_, y_, w_, h_) = face_utils.rect_to_bb(face)
         cv2.rectangle(resultImage, (x_,y_), (x_ + w_, y_ + h_), rectangleColor)
-        for (i, (x_, y_)) in enumerate(shape):
-            if i == 2 or i == 30 or i ==14:
-                cv2.circle(resultImage, (x_, y_), 1, (0, 0, 255), -1)
+        cv2.circle(resultImage, (shape.part(2).x, shape.part(2).y), 1, (0,0,255))
+
+
+        # for (i, (x_, y_)) in enumerate(shape):
+        #     if i == 2 or i == 30 or i ==14:
+        #         cv2.circle(resultImage, (x_, y_), 1, (0, 0, 255), -1)
+
         if w_ * h_ > maxarea:
             maxarea = w_ * h_
             x = x_
@@ -110,7 +116,7 @@ while True:
         face_centerY = y + (h/2)
         print("{0} \r".format(w))
 
-        Centering(drone, shape[2][0], shape[30][0], shape[30][1], shape[14][0], w, face_centerX, face_centerY)
+        Centering(drone, shape.part(2).x, shape.part(30).x, shape.part(30).y, shape.part(14).x, w, face_centerX, face_centerY)
 
     #Since we want to show something larger on the screen than the
     #original 320x240, we resize the image again
