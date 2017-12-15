@@ -58,13 +58,13 @@ def Centering(drone, LeftDot, CenterDotX, CenterDotY, RightDot, Width, face_cent
     #         yaw = -100
 
     ##PITCH##
-    if Width > 90:  # Drone is too close to face
-
+    if Width > 50:  # Drone is too close to face
+        pitch = int(Width/50)*(-5)
         if pitch < -10:
             pitch = -10
 
-    if Width < 60:  # Drone is too far from face
-
+    if Width < 50:  # Drone is too far from face
+        pitch = int(50/Width)*5
         if pitch > 10:
             pitch = 10
 

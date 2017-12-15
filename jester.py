@@ -1,18 +1,15 @@
 #Import the OpenCV library
 import os
 import sys
-
-sys.path.append('/usr/local/lib/python2.7/site-packages')
 import numpy as np
 import cv2
-from time import sleep
-import DynamicCentering.py
-def clear():
-    os.system( 'clear' )
+import DroneStartup
+import skvideo.io
+
 #Initialize a face cascade using the frontal face haar cascade provided
 #with the OpenCV2 library
-face_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt2.xml')
-
+face_cascade = cv2.CascadeClassifier('haarcascade/palm.xml')
+eye_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_eye_tree_eyeglasses.xml')
 #The deisred output width and height
 OUTPUT_SIZE_WIDTH = 775
 OUTPUT_SIZE_HEIGHT = 600
@@ -62,16 +59,16 @@ while True:
     #Now use the haar cascade detector to find all faces in the
     #image
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
+    eyes = eye_cascade.detectMultiScale(gray, 1.3, 5)
 
     #For now, we are only interested in the 'largest' face, and we
     #determine this based on the largest area of the found
     #rectangle. First initialize the required variables to 0
     maxArea = 0
-    # x = 0
-    # y = 0
-    # w = 0
-    # h = 0
+    x = 0
+    y = 0
+    w = 0
+    h = 0
 
 
     #Loop over all faces and check if the area for this face is
@@ -79,12 +76,11 @@ while True:
     face_boxes = []
 
     for (_x,_y,_w,_h) in faces:
-        face_boxes.append([_x,_y,_w,_h])
         if  _w*_h > maxArea:
-            # x = _x
-            # y = _y
-            # w = _w
-            # h = _h
+            x = _x
+            y = _y
+            w = _w
+            h = _h
             maxArea = _w*_h
 
         #If one or more faces are found, draw a rectangle around the
@@ -113,5 +109,4 @@ while True:
     cv2.imshow("result-image", largeResult)
     for face in face_boxes:
         print("{}, {}".format(face[0], face[1]) )
-    sleep(.05)
     clear()
