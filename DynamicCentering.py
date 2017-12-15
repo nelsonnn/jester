@@ -42,46 +42,46 @@ def Centering(drone, LeftDot, CenterDotX, CenterDotY, RightDot, Width, face_cent
     #     else:
     #         roll = -100
 
-    # ##YAW##
-    # if face_centerX < 250: # Drone is too far right
-    #
-    #     yaw = int(250/face_centerX * yaw_C)
-    #
-    #     if yaw > 100:
-    #         yaw = 100
-    #
-    # if face_centerX > 250: # Drone is too far left
-    #
-    #     yaw = int(face_centerX/250 * (-yaw_C))
-    #
-    #     if yaw < -100:
-    #         yaw = -100
+    ##YAW##
+    if face_centerX < 250: # Drone is too far right
+
+        roll = int(250/face_centerX * roll_C)
+
+        if roll > 100:
+            roll = 100
+
+    if face_centerX > 250: # Drone is too far left
+
+        roll = int(face_centerX/250 * (-roll_C))
+
+        if roll < -100:
+            roll = -100
 
     ##PITCH##
-    if Width > 50:  # Drone is too close to face
-        pitch = int(Width/50)*(-5)
+    if Width > 45:  # Drone is too close to face
+        pitch = int(Width/50)*(-pitch_C)
         if pitch < -10:
             pitch = -10
 
-    if Width < 50:  # Drone is too far from face
-        pitch = int(50/Width)*5
+    if Width < 45:  # Drone is too far from face
+        pitch = int(50/Width)*pitch_C
         if pitch > 10:
             pitch = 10
 
-    # ##GAZ##
-    # if face_centerY > 225: #Drone too high
-    #
-    #     gaz = int(face_centerY/140 * (-gaz_C))
-    #
-    #     if gaz < -100:
-    #         gaz = -100
-    #
-    # if face_centerY < 200: #Drone too low
-    #
-    #     gaz = int(140/face_centerY * gaz_C)
-    #
-    #     if gaz > 100:
-    #         gaz = 100
+    ##GAZ##
+    if face_centerY > 110: #Drone too high
+
+        gaz = int(face_centerY/140 * (-gaz_C))
+
+        if gaz < -100:
+            gaz = -100
+
+    if face_centerY < 110: #Drone too low
+
+        gaz = int(140/face_centerY * gaz_C)
+
+        if gaz > 100:
+            gaz = 100
     #
 
     if roll != 0 or pitch != 0:
